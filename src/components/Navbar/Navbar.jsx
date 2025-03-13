@@ -9,8 +9,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { usePathname } from "next/navigation";
-
-// import styles from "./navbar.module.css";
 import { Root, classes } from "./styles";
 import Image from "next/image";
 
