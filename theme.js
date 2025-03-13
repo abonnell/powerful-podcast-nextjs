@@ -30,6 +30,9 @@ const theme = createTheme({
       },
     },
   },
+  typography: {
+    fontFamily: '"Calibri", sans-serif',
+  },
 });
 
 export default theme;
