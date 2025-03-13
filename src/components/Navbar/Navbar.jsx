@@ -11,6 +11,7 @@ import {
 import { usePathname } from "next/navigation";
 import { Root, classes } from "./styles";
 import Image from "next/image";
+import Logo from "@public/logo.png";
 
 export default function Navbar({ navLinks }) {
   const navArr = Object.values(navLinks);
@@ -23,7 +24,7 @@ export default function Navbar({ navLinks }) {
         <Container>
           <Toolbar>
             <Link href={""}>
-              <Image src="/logo.png" alt="logo" width={50} height={50} />
+              <Image src={Logo} alt="logo" width={50} height={50} />
             </Link>
             <Box>
               {navArr.map((item, index) => {
