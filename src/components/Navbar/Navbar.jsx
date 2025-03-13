@@ -19,6 +19,7 @@ import Image from "next/image";
 import Logo from "@public/logo.png";
 import { useState } from "react";
 import { Montserrat_Underline } from "next/font/google";
+import { ExpandMore, ExpandLess } from "@mui/icons-material";
 
 export default function Navbar({ navLinks }) {
   const path = usePathname();
@@ -31,6 +32,8 @@ export default function Navbar({ navLinks }) {
   const handleCloseGallery = () => {
     setAnchorEl(null);
   };
+
+  // TODO: Specific styling for gallery subnav
 
   return (
     <Root>
@@ -58,6 +61,7 @@ export default function Navbar({ navLinks }) {
                           >
                             {item.key.toUpperCase()}
                           </Typography>
+                          {anchorEl ? <ExpandLess /> : <ExpandMore />}
                         </MenuItem>
                         {/* Gallery subnav */}
                         <Popper
