@@ -24,13 +24,14 @@ export default function Navbar({ navLinks }) {
         <Container>
           <Toolbar>
             <Link href={""}>
-              <Image src={Logo} alt="logo" width={50} height={50} />
+              <Link href={"/"}>
+                <Image src={Logo} alt="logo" width={50} height={50} href="/" />
+              </Link>
             </Link>
             <Box>
               {navArr.map((item, index) => {
                 return (
                   <Button
-                    // variant="text"
                     key={`${item.key}-${index}`}
                     href={item.path}
                     className={`${classes.navItem} ${
