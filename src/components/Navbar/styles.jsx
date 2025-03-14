@@ -15,7 +15,7 @@ const Root = styled("div")(({ theme }) => ({
     "&:hover": {
       color: theme.palette.primary.main,
     },
-    textDecoration: "none",
+    textDecoration: "none !important",
   },
   [`& .${classes.subNavItem}`]: {
     color: theme.palette.text.primary,
@@ -23,7 +23,7 @@ const Root = styled("div")(({ theme }) => ({
     "&:hover": {
       color: theme.palette.primary.main,
     },
-    textDecoration: "none",
+    textDecoration: "none !important",
   },
   [`& .${classes.currentPage}`]: {
     color: theme.palette.primary.main,
