@@ -294,7 +294,9 @@ export default function Navbar({ navLinks }) {
                 }}
               >
                 {/* Maybe replace with banner */}
-                <Image src={Logo} alt="logo" width={50} height={50} />
+                <Link href={"/"}>
+                  <Image src={Logo} alt="logo" width={50} height={50} />
+                </Link>
                 <Button onClick={handleOpenMenu}>
                   <MenuIcon
                     sx={{
