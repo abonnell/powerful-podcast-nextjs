@@ -56,23 +56,69 @@ export default function Navbar({ navLinks }) {
   const renderMenuItems = navLinks.map((item, index) => {
     if (item.key === "Gallery") {
       return (
-        <MenuItem key={`${item.key}-${index}`}>
-          <Link
-            href={"/gallery"}
-            className={`${classes.navItem}`}
-            onMouseOver={handleCloseGallery}
-            sx={{
-              color:
-                path === item.path
-                  ? theme.palette.primary.main
-                  : theme.palette.text.primary,
-              textDecoration: "none !important",
-            }}
+        <React.Fragment key={`${item.key}-${index}`}>
+          <MenuItem onMouseOver={handleOpenGallery}>
+            <Typography
+              className={`${classes.navItem} ${
+                path.includes("gallery") ? classes.currentPage : ""
+              }`}
+            >
+              {item.key.toUpperCase()}
+            </Typography>
+            {anchorEl ? <ExpandLess /> : <ExpandMore />}
+          </MenuItem>
+          {/* Gallery subnav */}
+          <Popper
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            role={undefined}
+            transition
+            disablePortal
+            onMouseLeave={handleCloseGallery}
+            placement="bottom"
           >
-            {item.key.toUpperCase()}
-          </Link>
-          <ExpandMore />
-        </MenuItem>
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{
+                  backgroundColor: "#272727",
+                  transformOrigin:
+                    placement === "bottom" ? "center top" : "center bottom",
+                }}
+              >
+                <Paper>
+                  <ClickAwayListener onClickAway={handleCloseGallery}>
+                    <MenuList
+                      id="menu-list-grow"
+                      sx={{
+                        backgroundColor: "#272727",
+                      }}
+                    >
+                      {item.path.map((galleryItem, galleryIndex) => (
+                        <MenuItem
+                          key={`${galleryItem.key}-${galleryIndex}`}
+                          onClick={handleCloseGallery}
+                          divider={galleryIndex == 0}
+                        >
+                          <Link
+                            href={galleryItem.path}
+                            className={`${classes.subNavItem} ${
+                              path.includes(galleryItem.path)
+                                ? classes.currentPage
+                                : ""
+                            }`}
+                          >
+                            {galleryItem.key.toUpperCase()}
+                          </Link>
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
+        </React.Fragment>
       );
     }
     return (
@@ -248,7 +294,7 @@ export default function Navbar({ navLinks }) {
                 }}
               >
                 {/* Maybe replace with banner */}
-                <Image src={Logo} height={50} width={50} />
+                <Image src={Logo} alt="logo" width={50} height={50} />
                 <Button onClick={handleOpenMenu}>
                   <MenuIcon
                     sx={{
