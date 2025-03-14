@@ -220,15 +220,15 @@ export default function Navbar({ navLinks }) {
         {desktop && (
           <Container>
             <Toolbar>
-              <MenuList style={{ display: "flex", justifyContent: "flex-end" }}>
+              <MenuList
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
                 <Link href={"/"}>
-                  <Image
-                    src={Logo}
-                    alt="logo"
-                    width={50}
-                    height={50}
-                    href="/"
-                  />
+                  <Image src={Logo} alt="logo" width={50} height={50} />
                 </Link>
                 <Box style={{ display: "flex", justifyContent: "flex-end" }}>
                   {renderMenuItems}
@@ -238,22 +238,37 @@ export default function Navbar({ navLinks }) {
           </Container>
         )}
         {!desktop && (
-          <ClickAwayListener onClickAway={handleCloseMenu}>
-            <Container style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button onClick={handleOpenMenu}>
-                <MenuIcon
-                  sx={{
-                    color: theme.palette.text.primary,
-                  }}
-                />
-              </Button>
-              <Drawer open={openMenu} onClose={handleCloseMenu} anchor="right">
-                <MenuList>
-                  <Box>{renderMobileMenuItems}</Box>
-                </MenuList>
-              </Drawer>
-            </Container>
-          </ClickAwayListener>
+          <React.Fragment>
+            <ClickAwayListener onClickAway={handleCloseMenu}>
+              <Container
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: "1rem",
+                }}
+              >
+                {/* Maybe replace with banner */}
+                <Image src={Logo} height={50} width={50} />
+                <Button onClick={handleOpenMenu}>
+                  <MenuIcon
+                    sx={{
+                      color: theme.palette.text.primary,
+                      fontSize: 30,
+                    }}
+                  />
+                </Button>
+                <Drawer
+                  open={openMenu}
+                  onClose={handleCloseMenu}
+                  anchor="right"
+                >
+                  <MenuList>
+                    <Box>{renderMobileMenuItems}</Box>
+                  </MenuList>
+                </Drawer>
+              </Container>
+            </ClickAwayListener>
+          </React.Fragment>
         )}
       </AppBar>
     </Root>
