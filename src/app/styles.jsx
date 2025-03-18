@@ -1,23 +1,19 @@
-// import { styled } from "@mui/material";
+import { styled } from "@mui/material";
 
-// const component = "navbar";
+const component = "home";
 
-// const classes = {
-//   navItem: `${component}-navItem`,
-//   currentPage: `${component}-currentPage`,
-// };
+const classes = {
+  bannerImage: `${component}-bannerImage`,
+  toolbar: `${component}-toolbar`,
+  contentContainer: `${component}-contentContainer`,
+};
 
-// const Root = styled("div")(({ theme }) => ({
-//   [`& .${classes.navItem}`]: {
-//     color: theme.palette.text.primary,
-//     padding: "1rem",
-//     "&:hover": {
-//       color: theme.palette.primary.main,
-//     },
-//   },
-//   [`& .${classes.currentPage}`]: {
-//     color: theme.palette.primary.main,
-//   },
-// }));
+const Root = styled("div")(({ theme }) => ({
+  [`& .${classes.toolbar}`]: theme.mixins.toolbar,
+  [`& .${classes.bannerImage}`]: {},
+  [`& .${classes.contentContainer}`]: {
+    marginTop: "5rem",
+  },
+}));
 
-// export { Root, classes };
+export { Root, classes };
