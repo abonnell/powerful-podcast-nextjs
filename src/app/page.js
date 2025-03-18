@@ -48,21 +48,21 @@ export default function Home() {
       img: PlaceholderArt,
       imgAlt: "Placeholder Art",
       title: "Episode 1",
-      href: "/episodes/1",
+      href: "/blog/1",
       previewText: lorem.generateSentences(2),
     },
     {
       img: PlaceholderArt,
       imgAlt: "Placeholder Art",
       title: "Episode 2",
-      href: "/episodes/2",
+      href: "/blog/2",
       previewText: lorem.generateSentences(2),
     },
     {
       img: PlaceholderArt,
       imgAlt: "Placeholder Art",
       title: "Episode 3",
-      href: "/episodes/3",
+      href: "/blog/3",
       previewText: lorem.generateSentences(2),
     },
   ];
@@ -86,7 +86,7 @@ export default function Home() {
       </Box>
       {/* Container for episodes + blogs components */}
       <Grid container justifyContent="center">
-        <Grid item xs={4} id="episodes" className={classes.contentContainer}>
+        <Grid item xs={5} id="episodes" className={classes.contentContainer}>
           <Typography
             variant="h4"
             component="h2"
@@ -106,7 +106,7 @@ export default function Home() {
           ))}
           <Link href="/episodes">See more...</Link>
         </Grid>
-        <Grid item xs={4} id="blogs" className={classes.contentContainer}>
+        <Grid item xs={5} id="blogs" className={classes.contentContainer}>
           <Typography
             variant="h4"
             component="h2"
