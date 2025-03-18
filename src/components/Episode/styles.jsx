@@ -3,11 +3,11 @@ import { styled } from "@mui/material";
 const component = "episode";
 
 const classes = {
-  episodeArt: `${component}-navItem`,
+  container: `${component}-container`,
 };
 
 const Root = styled("div")(({ theme }) => ({
-  [`& .${classes.episodeArt}`]: {
+  [`& .${classes.container}`]: {
     padding: "1.5rem 0 1.5rem 0",
     textAlign: "center",
   },
