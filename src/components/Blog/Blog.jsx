@@ -12,11 +12,11 @@ export default function Blog({ img, imgAlt, title, href, previewText }) {
         <Box
           sx={{
             position: "absolute",
-            bottom: "10%",
-            left: "14.1%",
+            bottom: "0",
+            right: "50%",
+            transform: "translate(50%, 0)",
             background:
               "linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0.5))",
-            height: 100,
           }}
         >
           <Typography className={classes.titleText} variant="h5" component="h2">
