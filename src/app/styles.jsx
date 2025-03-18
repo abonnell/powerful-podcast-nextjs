@@ -13,6 +13,9 @@ const Root = styled("div")(({ theme }) => ({
   [`& .${classes.bannerImage}`]: {},
   [`& .${classes.contentContainer}`]: {
     marginTop: "5rem",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 }));
 
