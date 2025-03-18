@@ -17,6 +17,7 @@ const Root = styled("div")(({ theme }) => ({
     position: "relative",
     overflow: "hidden",
     objectFit: "none",
+    marginTop: "1rem",
   },
   [`& .${classes.art}`]: {
     objectFit: "cover",
