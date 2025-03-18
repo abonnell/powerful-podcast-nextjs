@@ -86,7 +86,7 @@ export default function Home() {
       </Box>
       {/* Container for episodes + blogs components */}
       <Grid container justifyContent="center">
-        <Grid item xs={6} id="episodes" className={classes.contentContainer}>
+        <Grid item xs={4} id="episodes" className={classes.contentContainer}>
           <Typography
             variant="h4"
             component="h2"
@@ -106,7 +106,7 @@ export default function Home() {
           ))}
           <Link href="/episodes">See more...</Link>
         </Grid>
-        <Grid item xs={6} id="blogs" className={classes.contentContainer}>
+        <Grid item xs={4} id="blogs" className={classes.contentContainer}>
           <Typography
             variant="h4"
             component="h2"
