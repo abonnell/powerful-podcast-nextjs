@@ -23,13 +23,6 @@ const Root = styled("div")(({ theme }) => ({
     width: 400,
     height: 200,
   },
-  [`& .${classes.textContainer}`]: {
-    position: "absolute",
-    bottom: "6.5%",
-    left: "26%",
-    background: "linear-gradient(to top, rgb(0, 0, 0), rgb(0, 0, 0))",
-    height: 100,
-  },
   [`& .${classes.titleText}`]: {
     color: "white",
     marginBottom: "0.5rem",

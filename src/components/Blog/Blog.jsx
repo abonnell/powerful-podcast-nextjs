@@ -12,8 +12,8 @@ export default function Blog({ img, imgAlt, title, href, previewText }) {
         <Box
           sx={{
             position: "absolute",
-            bottom: "6.5%",
-            left: "26%",
+            bottom: "10%",
+            left: "14.1%",
             background:
               "linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0.5))",
             height: 100,
@@ -22,7 +22,6 @@ export default function Blog({ img, imgAlt, title, href, previewText }) {
           <Typography className={classes.titleText} variant="h5" component="h2">
             {title}
           </Typography>
-
           <Typography
             className={classes.previewText}
             variant="body1"
