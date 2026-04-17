@@ -40,20 +40,33 @@ export async function getPodcastFeed() {
     });
     const xmlText = await response.text();
     
-    // Extract all itunes:image hrefs from the XML
-    const imageMatches = [...xmlText.matchAll(/<itunes:image\s+href="([^"]+)"/g)];
-    const imageUrls = imageMatches.map(match => match[1]);
+    // Extract feed-level image (first itunes:image outside of any <item> tag)
+    const feedImageMatch = xmlText.match(/<channel[^>]*>[\s\S]*?<itunes:image\s+href="([^"]+)"/);
+    const feedImage = feedImageMatch ? feedImageMatch[1] : null;
     
     // Now parse with rss-parser
     const feed = await parser.parseString(xmlText);
     
-    // Extract feed-level iTunes image (first one should be the feed image)
-    const feedImage = imageUrls[0] || feed.image?.url;
+    // Extract all <item> sections from XML and create a map of GUID -> image
+    const itemMatches = [...xmlText.matchAll(/<item[^>]*>([\s\S]*?)<\/item>/g)];
+    const imageMap = {};
+    
+    for (const match of itemMatches) {
+      const itemXml = match[1];
+      // Extract GUID from this item
+      const guidMatch = itemXml.match(/<guid[^>]*>([^<]+)<\/guid>/);
+      // Extract image from this item
+      const itemImageMatch = itemXml.match(/<itunes:image\s+href="([^"]+)"/);
+      
+      if (guidMatch && itemImageMatch) {
+        imageMap[guidMatch[1]] = itemImageMatch[1];
+      }
+    }
     
     return {
       title: feed.title,
       description: feed.description,
-      image: feedImage,
+      image: feedImage || feed.image?.url,
       episodes: feed.items.map((item, index) => {
         // Extract episode number from title if it contains "Ep" followed by a number
         let episodeNumber = item.episodeNumber;
@@ -64,9 +77,8 @@ export async function getPodcastFeed() {
           }
         }
         
-        // Get episode image - skip first image (that's the feed image), then map by index
-        // imageUrls[0] is feed image, imageUrls[1+] are episode images in order
-        const episodeImage = imageUrls[index + 1] || feedImage;
+        // Get episode-specific image from the map (don't fall back to feed image)
+        const episodeImage = imageMap[item.guid] || null;
         
         return {
           title: item.title,

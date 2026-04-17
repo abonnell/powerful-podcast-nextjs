@@ -25,8 +25,33 @@ async function strapiFind(endpoint, options = {}) {
   return response.json();
 }
 
+/**
+ * Extract unique authors from blog posts
+ * @param {Array} blogs - Array of blog data from Strapi
+ * @returns {Array} Array of unique authors with id, firstname, lastname
+ */
+function extractUniqueAuthors(blogs) {
+  const authorsMap = new Map();
+  
+  blogs.forEach(blog => {
+    if (blog.createdBy) {
+      const id = blog.createdBy.id;
+      if (!authorsMap.has(id)) {
+        authorsMap.set(id, {
+          id: id,
+          firstname: blog.createdBy.firstname || '',
+          lastname: blog.createdBy.lastname || '',
+        });
+      }
+    }
+  });
+  
+  return Array.from(authorsMap.values());
+}
+
 const strapi = {
   find: strapiFind,
+  extractUniqueAuthors: extractUniqueAuthors,
 };
 
 export default strapi;

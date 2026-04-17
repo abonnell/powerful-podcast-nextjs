@@ -3,7 +3,7 @@
 import Blog from "@components/Blog/Blog.jsx";
 import SortableGrid from "@components/SortableGrid/SortableGrid.jsx";
 
-export default function BlogGrid({ blogs }) {
+export default function BlogGrid({ blogs, authors = [] }) {
   const sortOptions = [
     {
       value: "createdAt",
@@ -27,12 +27,24 @@ export default function BlogGrid({ blogs }) {
     },
   ];
 
+  // Create filter options from authors list
+  const filterOptions = authors.map((author) => {
+    const authorName = `${author.firstname} ${author.lastname}`.trim();
+    return {
+      value: author.id.toString(),
+      label: authorName,
+      filterFn: (blog) => blog.author === authorName,
+    };
+  });
+
   return (
     <SortableGrid
       items={blogs}
       sortOptions={sortOptions}
       defaultSortBy="createdAt"
       defaultSortOrder="desc"
+      filterOptions={filterOptions}
+      defaultFilterBy="all"
       emptyMessage="No blogs found."
       renderItem={(blog, index) => (
         <Blog

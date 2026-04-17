@@ -1,5 +1,6 @@
 import EpisodeGrid from "@components/EpisodeGrid/EpisodeGrid.jsx";
 import { getPodcastFeed, generateEpisodeSlug } from "@/lib/rss";
+import LogoImage from "@public/logo.png";
 
 export const revalidate = 14400; // Revalidate every 4 hours
 
@@ -9,6 +10,8 @@ export default async function EpisodesPage() {
   // Pre-generate hrefs on the server side
   const episodesWithHrefs = episodes.map(episode => ({
     ...episode,
+    // Use episode-specific image if available, otherwise use static logo
+    image: episode.image || LogoImage,
     href: `/episodes/${generateEpisodeSlug(episode.title, episode.episodeNumber)}`
   }));
 
