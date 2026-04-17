@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Banner from "@public/banner.svg";
+import BannerDark from "@public/banner_dark.png";
 import Episode from "@components/Episode/Episode.jsx";
 import Blog from "@components/Blog/Blog.jsx";
 import LogoImage from "@public/logo.png";
@@ -57,8 +57,8 @@ export default async function Home() {
       <div className="h-16" /> {/* Spacer for fixed navbar */}
       {/* Banner + title */}
       <div className="flex flex-col items-center justify-center py-8">
-        <Image src={Banner} alt="Banner" width={500} height={300} />
-        <h1 className="text-4xl font-bold mt-4">powerful. a power metal podcast</h1>
+        <Image src={BannerDark} alt="Banner" width={500} height={300} />
+        <h1 className="text-4xl font-bold mt-4" style={{display: "none"}}>powerful. the power metal podcast</h1>
       </div>
       {/* Container for episodes + blogs components */}
       <div className="flex justify-center">
