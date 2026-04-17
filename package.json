@@ -9,18 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.0",
-    "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.13.3",
-    "@mui/material": "^5.13.3",
     "next": "15.2.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "rss-parser": "^3.13.0",
+    "strapi-sdk-js": "^3.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.2.2",
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
-    "lorem-ipsum": "^2.0.8"
+    "lorem-ipsum": "^2.0.8",
+    "tailwindcss": "^4.2.2"
   }
 }

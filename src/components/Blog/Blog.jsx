@@ -1,42 +1,47 @@
 import Image from "next/image";
-import { Box, Typography, useTheme } from "@mui/material";
-import { Root, classes } from "./styles";
 import Link from "next/link";
 
-export default function Blog({ img, imgAlt, title, href, previewText }) {
-  const theme = useTheme();
+export default function Blog({
+  img,
+  imgAlt,
+  title,
+  href,
+  previewText,
+  author,
+  createdAt,
+}) {
   return (
-    <Root>
-      <Link href={href}>
-        <Box className={classes.container}>
-          <Image src={img} alt={imgAlt} className={classes.art} />
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: "0",
-              right: "50%",
-              transform: "translate(50%, 0)",
-              background:
-                "linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0.5))",
-            }}
-          >
-            <Typography
-              className={classes.titleText}
-              variant="h5"
-              component="h2"
-            >
-              {title}
-            </Typography>
-            <Typography
-              className={classes.previewText}
-              variant="body1"
-              component="p"
-            >
-              {previewText}
-            </Typography>
-          </Box>
-        </Box>
-      </Link>
-    </Root>
+    <Link href={href}>
+      <div className="text-center relative overflow-hidden rounded-lg max-w-[400px] mx-auto">
+        <Image
+          src={img}
+          alt={imgAlt}
+          width={400}
+          height={400}
+          className="object-cover w-full h-[400px]"
+        />
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-black/50 p-4">
+          <h2 className="text-xl font-bold text-white mb-1 text-left">
+            {title}
+          </h2>
+          <div className="text-sm text-white/80 text-left mb-1">
+            {author && <span>By {author}</span>}
+            {author && createdAt && <span> • </span>}
+            {createdAt && (
+              <span>
+                {new Date(createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-white text-left line-clamp-2">
+            {previewText}
+          </p>
+        </div>
+      </div>
+    </Link>
   );
 }
