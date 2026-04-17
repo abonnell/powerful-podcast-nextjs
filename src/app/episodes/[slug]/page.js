@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 export const revalidate = 14400; // Revalidate every 4 hours
 
 export default async function EpisodePage({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const { episodes } = await getPodcastFeed();
   
   const episode = episodes.find(

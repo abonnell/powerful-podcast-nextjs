@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,6 +13,9 @@ export default function Episode({
   pubDate,
   description,
 }) {
+  const [imgSrc, setImgSrc] = useState(img || "/logo.png");
+  const [hasError, setHasError] = useState(!img);
+
   // Format publication date
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -31,15 +37,21 @@ export default function Episode({
   return (
     <Link href={href}>
       <div className="text-center relative overflow-hidden rounded-lg max-w-[400px] mx-auto">
-        <Image
-          src={img}
-          alt={imgAlt}
-          width={400}
-          height={400}
-          className="object-cover w-full h-[400px]"
-        />
+        <div className="w-full h-[400px]">
+          <Image
+            src={imgSrc}
+            alt={imgAlt}
+            width={400}
+            height={400}
+            className="w-full h-[400px] object-cover"
+            onError={() => {
+              setImgSrc("/logo.png");
+              setHasError(true);
+            }}
+          />
+        </div>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-black/50 p-4">
-          <h2 className="text-xl font-bold text-white mb-1 text-left">
+          <h2 className="text-xl font-bold text-white mb-1 text-left line-clamp-2 min-h-[3.5rem]">
             {title}
           </h2>
           <div className="flex items-center gap-2 text-sm text-white/80 mb-2">

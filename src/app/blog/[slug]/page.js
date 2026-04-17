@@ -7,7 +7,7 @@ import { generateBlogSlug } from "@/lib/blog";
 export const revalidate = 14400; // Revalidate every 4 hours
 
 export default async function BlogPost({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   
   let blog = null;
   
