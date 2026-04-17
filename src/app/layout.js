@@ -1,11 +1,5 @@
-"use client";
-// import "./globals.css";
-// import { Inter } from "next/font/google";
-import { ThemeProvider, CssBaseline, Button } from "@mui/material";
+import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
-
-import theme from "../../theme";
-// const inter = Inter({ subsets: ["latin"] });
 
 const navLinks = [
   {
@@ -17,16 +11,16 @@ const navLinks = [
     path: "/episodes",
   },
   {
+    key: "Blog",
+    path: "/blog",
+  },
+  {
     key: "About",
     path: "/about",
   },
   {
     key: "Contact",
     path: "/contact",
-  },
-  {
-    key: "Blog",
-    path: "/blog",
   },
   {
     key: "Gallery",
@@ -45,14 +39,11 @@ const navLinks = [
 
 export default function RootLayout({ children }) {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline enableColorScheme />
-      <html lang="en">
-        <body>
-          <Navbar navLinks={navLinks} />
-          {children}
-        </body>
-      </html>
-    </ThemeProvider>
+    <html lang="en">
+      <body className="antialiased">
+        <Navbar navLinks={navLinks} />
+        {children}
+      </body>
+    </html>
   );
 }

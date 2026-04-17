@@ -1,133 +1,108 @@
-"use client";
 import Image from "next/image";
-import { Root, classes } from "./styles";
-import { LoremIpsum } from "lorem-ipsum";
 import Banner from "@public/banner.svg";
-import { Box, Container, Grid, Typography } from "@mui/material";
-import { useTheme } from "@mui/material";
 import Episode from "@components/Episode/Episode.jsx";
 import Blog from "@components/Blog/Blog.jsx";
-import PlaceholderArt from "@public/beyond-the-decades.png";
+import LogoImage from "@public/logo.png";
 import Link from "next/link";
+import strapi from "@/lib/strapi";
+import { getPodcastFeed, generateEpisodeSlug } from "@/lib/rss";
+import { generateBlogSlug, getPreviewText } from "@/lib/blog";
 
-export default function Home() {
-  const theme = useTheme();
-  const lorem = new LoremIpsum({
-    sentencesPerParagraph: {
-      max: 8,
-      min: 4,
-    },
-    wordsPerSentence: {
-      max: 16,
-      min: 4,
-    },
-  });
-  const episodes = [
-    {
-      img: PlaceholderArt,
-      imgAlt: "Placeholder Art",
-      title: "Episode 1",
-      href: "/episodes/1",
-    },
-    {
-      img: PlaceholderArt,
-      imgAlt: "Placeholder Art",
-      title: "Episode 2",
-      href: "/episodes/2",
-    },
-    {
-      img: PlaceholderArt,
-      imgAlt: "Placeholder Art",
-      title: "Episode 3",
-      href: "/episodes/3",
-    },
-  ];
+export const revalidate = 14400; // Revalidate every 4 hours
 
-  const blogs = [
-    {
-      img: PlaceholderArt,
-      imgAlt: "Placeholder Art",
-      title: "Episode 1",
-      href: "/blog/1",
-      previewText: lorem.generateSentences(2),
-    },
-    {
-      img: PlaceholderArt,
-      imgAlt: "Placeholder Art",
-      title: "Episode 2",
-      href: "/blog/2",
-      previewText: lorem.generateSentences(2),
-    },
-    {
-      img: PlaceholderArt,
-      imgAlt: "Placeholder Art",
-      title: "Episode 3",
-      href: "/blog/3",
-      previewText: lorem.generateSentences(2),
-    },
-  ];
+export default async function Home() {
+  // Fetch episodes from RSS feed
+  const { episodes: allEpisodes = [] } = await getPodcastFeed();
+  
+  // Get the 3 most recent episodes
+  const recentEpisodes = allEpisodes
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+    .slice(0, 3)
+    .map(episode => ({
+      ...episode,
+      href: `/episodes/${generateEpisodeSlug(episode.title, episode.episodeNumber)}`
+    }));
+
+  let blogs = [];
+  
+  // Fetch blogs from Strapi
+  try {
+    const response = await strapi.find("blogs");
+    const strapiBlogs = response.data || [];
+    
+    // Transform Strapi blogs to component format
+    blogs = strapiBlogs.map((blog) => {
+      // Use Cover image from Strapi if available, otherwise fallback to logo.png
+      let imgSrc = LogoImage;
+      if (blog.Cover?.url) {
+        imgSrc = `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`;
+      }
+      
+      return {
+        img: imgSrc,
+        imgAlt: blog.Title,
+        title: blog.Title,
+        href: `/blog/${generateBlogSlug(blog.Title)}`,
+        previewText: getPreviewText(blog.Body, 100),
+        author: blog.createdBy ? `${blog.createdBy.firstname} ${blog.createdBy.lastname}` : null,
+        createdAt: blog.createdAt,
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching blogs from Strapi:", error);
+  }
 
   return (
-    <Root>
-      <div className={classes.toolbar} />
+    <div>
+      <div className="h-16" /> {/* Spacer for fixed navbar */}
       {/* Banner + title */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <div className="flex flex-col items-center justify-center py-8">
         <Image src={Banner} alt="Banner" width={500} height={300} />
-        <Typography variant="h4" component="h1">
-          powerful. a power metal podcast
-        </Typography>
-      </Box>
+        <h1 className="text-4xl font-bold mt-4">powerful. a power metal podcast</h1>
+      </div>
       {/* Container for episodes + blogs components */}
-      <Grid container justifyContent="center">
-        <Grid item xs={5} id="episodes" className={classes.contentContainer}>
-          <Typography
-            variant="h4"
-            component="h2"
-            gutterBottom
-            textAlign={"center"}
-          >
-            Episodes
-          </Typography>
-          {episodes.map((episode, index) => (
-            <Episode
-              key={index}
-              img={episode.img}
-              imgAlt={episode.imgAlt}
-              title={episode.title}
-              href={episode.href}
-            />
-          ))}
-          <Link href="/episodes">See more...</Link>
-        </Grid>
-        <Grid item xs={5} id="blogs" className={classes.contentContainer}>
-          <Typography
-            variant="h4"
-            component="h2"
-            gutterBottom
-            textAlign={"center"}
-          >
-            Blogs
-          </Typography>
-          {blogs.map((blog, index) => (
-            <Blog
-              key={index}
-              img={blog.img}
-              imgAlt={blog.imgAlt}
-              title={blog.title}
-              href={blog.href}
-              previewText={blog.previewText}
-            />
-          ))}
-          <Link href="/blogs">See more...</Link>
-        </Grid>
-      </Grid>
-    </Root>
+      <div className="flex justify-center">
+        <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 gap-0">
+          <div id="episodes" className="mt-20 flex flex-col items-center">
+            <h2 className="text-4xl font-bold mb-2 text-center">Episodes</h2>
+            {recentEpisodes.map((episode, index) => (
+              <div key={episode.guid || index} className="my-2">
+                <Episode
+                  img={episode.image}
+                  imgAlt={episode.title}
+                  title={episode.title}
+                  href={episode.href}
+                  duration={episode.duration}
+                  pubDate={episode.pubDate}
+                  description={episode.description}
+                />
+              </div>
+            ))}
+            <Link href="/episodes" className="text-primary-main hover:underline no-underline">
+              See more...
+            </Link>
+          </div>
+          <div id="blogs" className="mt-20 flex flex-col items-center">
+            <h2 className="text-4xl font-bold mb-2 text-center">Blogs</h2>
+            {blogs.map((blog, index) => (
+              <div key={index} className="my-2">
+                <Blog
+                  img={blog.img}
+                  imgAlt={blog.imgAlt}
+                  title={blog.title}
+                  href={blog.href}
+                  previewText={blog.previewText}
+                  author={blog.author}
+                  createdAt={blog.createdAt}
+                />
+              </div>
+            ))}
+            <Link href="/blog" className="text-primary-main hover:underline no-underline">
+              See more...
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

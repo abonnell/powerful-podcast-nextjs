@@ -1,22 +1,16 @@
-import BlogGrid from "@components/BlogGrid/BlogGrid.jsx";
-import LogoImage from "@public/logo.png";
-import strapi from "@/lib/strapi";
-import { generateBlogSlug, getPreviewText } from "@/lib/blog";
+import { NextResponse } from 'next/server';
+import strapi from '@/lib/strapi';
+import { generateBlogSlug, getPreviewText } from '@/lib/blog';
 
-export const revalidate = 14400; // Revalidate every 4 hours
-
-export default async function BlogsPage() {
-  let blogs = [];
-  
-  // Fetch blogs from Strapi
+export async function GET() {
   try {
     const response = await strapi.find("blogs");
     const strapiBlogs = response.data || [];
     
     // Transform Strapi blogs to component format
-    blogs = strapiBlogs.map((blog) => {
+    const blogs = strapiBlogs.map((blog) => {
       // Use Cover image from Strapi if available, otherwise fallback to logo.png
-      let imgSrc = LogoImage;
+      let imgSrc = '/logo.png';
       if (blog.Cover?.url) {
         imgSrc = `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`;
       }
@@ -31,18 +25,10 @@ export default async function BlogsPage() {
         createdAt: blog.createdAt,
       };
     });
+    
+    return NextResponse.json(blogs);
   } catch (error) {
     console.error("Error fetching blogs from Strapi:", error);
+    return NextResponse.json({ error: 'Failed to fetch blogs' }, { status: 500 });
   }
-
-  return (
-    <div>
-      <div className="h-16" /> {/* Spacer for fixed navbar */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8 text-center">All Blogs</h1>
-        
-        <BlogGrid blogs={blogs} />
-      </div>
-    </div>
-  );
 }
