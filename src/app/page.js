@@ -31,23 +31,26 @@ export default async function Home() {
     const strapiBlogs = response.data || [];
     
     // Transform Strapi blogs to component format
-    blogs = strapiBlogs.map((blog) => {
-      // Use Cover image from Strapi if available, otherwise fallback to logo.png
-      let imgSrc = LogoImage;
-      if (blog.Cover?.url) {
-        imgSrc = blog.Cover.url.startsWith('http') ? blog.Cover.url : `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`;
-      }
-      
-      return {
-        img: imgSrc,
-        imgAlt: blog.Title,
-        title: blog.Title,
-        href: `/blog/${generateBlogSlug(blog.Title)}`,
-        previewText: getPreviewText(blog.Body, 100),
-        author: blog.createdBy ? `${blog.createdBy.firstname} ${blog.createdBy.lastname}` : null,
-        createdAt: blog.createdAt,
-      };
-    });
+    blogs = strapiBlogs
+      .map((blog) => {
+        // Use Cover image from Strapi if available, otherwise fallback to logo.png
+        let imgSrc = LogoImage;
+        if (blog.Cover?.url) {
+          imgSrc = blog.Cover.url.startsWith('http') ? blog.Cover.url : `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`;
+        }
+        
+        return {
+          img: imgSrc,
+          imgAlt: blog.Title,
+          title: blog.Title,
+          href: `/blog/${generateBlogSlug(blog.Title)}`,
+          previewText: getPreviewText(blog.Body, 100),
+          author: blog.createdBy ? `${blog.createdBy.firstname} ${blog.createdBy.lastname}` : null,
+          createdAt: blog.createdAt,
+        };
+      })
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 3);
   } catch (error) {
     console.error("Error fetching blogs from Strapi:", error);
   }
