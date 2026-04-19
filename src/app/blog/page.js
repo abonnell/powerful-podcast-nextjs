@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import BlogGrid from "@components/BlogGrid/BlogGrid.jsx";
 import LogoImage from "@public/logo.png";
 import strapi from "@/lib/strapi";
@@ -45,7 +46,9 @@ export default async function BlogsPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-8 text-center">All Blogs</h1>
         
-        <BlogGrid blogs={blogs} authors={authors} />
+        <Suspense fallback={<div className="text-center py-8">Loading blogs...</div>}>
+          <BlogGrid blogs={blogs} authors={authors} />
+        </Suspense>
       </div>
     </div>
   );
