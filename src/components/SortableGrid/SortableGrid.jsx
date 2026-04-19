@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function SortableGrid({
   items,
@@ -12,9 +13,39 @@ export default function SortableGrid({
   renderItem,
   emptyMessage = "No items found.",
 }) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Initialize state from URL query params if available
+  const authorParam = searchParams.get("author");
   const [sortBy, setSortBy] = useState(defaultSortBy);
   const [sortOrder, setSortOrder] = useState(defaultSortOrder);
-  const [filterBy, setFilterBy] = useState(defaultFilterBy);
+  const [filterBy, setFilterBy] = useState(authorParam || defaultFilterBy);
+
+  // Update filter when URL changes
+  useEffect(() => {
+    const authorParam = searchParams.get("author");
+    if (authorParam) {
+      setFilterBy(authorParam);
+    }
+  }, [searchParams]);
+
+  // Update URL when filter changes
+  const handleFilterChange = (newFilter) => {
+    setFilterBy(newFilter);
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (newFilter === "all") {
+      params.delete("author");
+    } else {
+      params.set("author", newFilter);
+    }
+
+    const queryString = params.toString();
+    router.push(queryString ? `?${queryString}` : window.location.pathname, {
+      scroll: false,
+    });
+  };
 
   // Apply filtering first
   const filteredItems =
@@ -42,7 +73,7 @@ export default function SortableGrid({
             <label className="font-medium">Filter by author:</label>
             <select
               value={filterBy}
-              onChange={(e) => setFilterBy(e.target.value)}
+              onChange={(e) => handleFilterChange(e.target.value)}
               className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             >
               <option value="all">All</option>

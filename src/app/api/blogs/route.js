@@ -4,7 +4,7 @@ import { generateBlogSlug, getPreviewText } from '@/lib/blog';
 
 export async function GET() {
   try {
-    const response = await strapi.find("blogs");
+    const response = await strapi.find("blogs?populate=Cover&populate=createdBy");
     const strapiBlogs = response.data || [];
     
     // Transform Strapi blogs to component format
@@ -12,7 +12,7 @@ export async function GET() {
       // Use Cover image from Strapi if available, otherwise fallback to logo.png
       let imgSrc = '/logo.png';
       if (blog.Cover?.url) {
-        imgSrc = `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`;
+        imgSrc = blog.Cover.url.startsWith('http') ? blog.Cover.url : `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`;
       }
       
       return {
