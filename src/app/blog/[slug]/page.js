@@ -5,6 +5,7 @@ import LogoImage from "@public/logo.png";
 import { notFound } from "next/navigation";
 import { generateBlogSlug } from "@/lib/blog";
 import ShareButton from "@/components/ShareButton/ShareButton.jsx";
+import sanitizeHtml from "sanitize-html";
 
 export const revalidate = 14400; // Revalidate every 4 hours
 
@@ -32,6 +33,21 @@ export default async function BlogPost({ params }) {
   const blogImage = blog.Cover?.url 
     ? (blog.Cover.url.startsWith('http') ? blog.Cover.url : `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`)
     : LogoImage;
+
+  // Sanitize HTML content to prevent XSS attacks
+  const sanitizedBody = sanitizeHtml(blog.Body, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'figure', 'figcaption', 'details', 'summary']),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      '*': ['class', 'id', 'style'],
+      'img': ['src', 'alt', 'title', 'width', 'height', 'loading'],
+      'a': ['href', 'target', 'rel'],
+    },
+    allowedSchemes: ['http', 'https', 'mailto'],
+    allowedSchemesByTag: {
+      img: ['http', 'https', 'data']
+    }
+  });
 
   return (
     <div>
@@ -69,7 +85,7 @@ export default async function BlogPost({ params }) {
         </div>
         <div 
           className="blog-content text-base leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: blog.Body }}
+          dangerouslySetInnerHTML={{ __html: sanitizedBody }}
         />
       </div>
     </div>
