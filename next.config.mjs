@@ -16,6 +16,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'honorable-sunrise-0d835db6ec.media.strapiapp.com',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
         hostname: 'image.simplecastcdn.com',
         port: '',
         pathname: '/**'

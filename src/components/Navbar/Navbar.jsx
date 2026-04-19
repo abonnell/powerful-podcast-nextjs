@@ -71,7 +71,7 @@ export default function Navbar({ navLinks }) {
           <button
             onMouseEnter={handleOpenGallery}
             className={`px-4 py-4 hover:text-primary-main transition-colors no-underline ${
-              path.includes("gallery")
+              isActive("/gallery")
                 ? "text-primary-main"
                 : "text-gray-900 dark:text-gray-100"
             }`}
@@ -101,7 +101,7 @@ export default function Navbar({ navLinks }) {
                   key={`${galleryItem.key}-${galleryIndex}`}
                   href={galleryItem.path}
                   className={`block px-4 py-4 hover:text-primary-main transition-colors no-underline ${
-                    path.includes(galleryItem.path)
+                    isActive(galleryItem.path)
                       ? "text-primary-main"
                       : "text-gray-900 dark:text-gray-100"
                   }`}
@@ -120,7 +120,7 @@ export default function Navbar({ navLinks }) {
         key={`${item.key}-${index}`}
         href={item.path}
         className={`px-4 py-4 hover:text-primary-main transition-colors no-underline ${
-          path === item.path
+          isActive(item.path)
             ? "text-primary-main"
             : "text-gray-900 dark:text-gray-100"
         }`}
@@ -138,7 +138,7 @@ export default function Navbar({ navLinks }) {
           <button
             onClick={() => setAnchorEl(anchorEl ? null : {})}
             className={`w-full text-left px-4 py-4 flex items-center justify-between no-underline ${
-              path.includes("gallery")
+              isActive("/gallery")
                 ? "text-primary-main"
                 : "text-gray-900 dark:text-gray-100"
             }`}
@@ -176,7 +176,7 @@ export default function Navbar({ navLinks }) {
                   key={`${galleryItem.key}-${galleryIndex}`}
                   href={galleryItem.path}
                   className={`block px-8 py-4 hover:text-primary-main transition-colors no-underline ${
-                    path.includes(galleryItem.path)
+                    isActive(galleryItem.path)
                       ? "text-primary-main"
                       : "text-gray-900 dark:text-gray-100"
                   }`}
@@ -195,7 +195,7 @@ export default function Navbar({ navLinks }) {
         key={`${item.key}-${index}`}
         href={item.path}
         className={`block px-4 py-4 hover:text-primary-main transition-colors no-underline ${
-          path === item.path
+          isActive(item.path)
             ? "text-primary-main"
             : "text-gray-900 dark:text-gray-100"
         }`}

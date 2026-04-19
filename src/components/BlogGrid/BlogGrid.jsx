@@ -30,8 +30,9 @@ export default function BlogGrid({ blogs, authors = [] }) {
   // Create filter options from authors list
   const filterOptions = authors.map((author) => {
     const authorName = `${author.firstname} ${author.lastname}`.trim();
+    const authorSlug = `${author.firstname}-${author.lastname}`.toLowerCase();
     return {
-      value: author.id.toString(),
+      value: authorSlug,
       label: authorName,
       filterFn: (blog) => blog.author === authorName,
     };
