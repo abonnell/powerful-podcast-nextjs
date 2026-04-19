@@ -25,7 +25,7 @@ Make sure to add this same secret to your production environment variables (e.g.
 
 ### 2. Configure Strapi Webhook
 
-1. Log into your Strapi admin panel at: `https://honorable-sunrise-0d835db6ec.strapiapp.com/admin`
+1. Log into your Strapi admin panel at: ``
 
 2. Navigate to **Settings** → **Webhooks**
 
