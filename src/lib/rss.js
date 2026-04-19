@@ -115,7 +115,7 @@ export function generateEpisodeSlug(title, episodeNumber) {
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .substring(0, 30)
+    .substring(0, 72)
     .replace(/-$/, '');
   
   // Subtract 5 from episode number to match written episode numbers

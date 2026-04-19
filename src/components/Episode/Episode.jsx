@@ -36,7 +36,7 @@ export default function Episode({
 
   return (
     <Link href={href}>
-      <div className="text-center relative overflow-hidden rounded-lg max-w-[400px] mx-auto">
+      <div className="text-center relative overflow-hidden rounded-lg max-w-[400px] mx-auto transition-transform duration-300 hover:scale-105 hover:shadow-xl group">
         <div className="w-full h-[400px]">
           <Image
             src={imgSrc}
@@ -51,8 +51,11 @@ export default function Episode({
           />
         </div>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-black/50 p-4">
-          <h2 className="text-xl font-bold text-white mb-1 text-left line-clamp-2 min-h-[3.5rem]">
-            {title}
+          <h2 className="text-xl font-bold text-white mb-1 text-left line-clamp-2 min-h-[3.5rem] flex items-start justify-between gap-2">
+            <span className="flex-1">{title}</span>
+            <span className="text-primary-main group-hover:translate-x-1 transition-transform flex-shrink-0">
+              →
+            </span>
           </h2>
           <div className="flex items-center gap-2 text-sm text-white/80 mb-2">
             {duration && <span>{duration}</span>}

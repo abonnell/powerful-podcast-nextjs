@@ -67,7 +67,9 @@ export default async function Home() {
       <div className="flex justify-center">
         <div className="w-full max-w-[1200px] grid grid-cols-1 md:grid-cols-2 gap-0">
           <div id="episodes" className="mt-20 flex flex-col items-center">
-            <h2 className="text-4xl font-bold mb-2 text-center">Episodes</h2>
+            <Link href="/episodes" className="hover:text-primary-main transition-colors cursor-pointer group">
+              <h2 className="text-4xl font-bold mb-8 text-center">Episodes →</h2>
+            </Link>
             {recentEpisodes.map((episode, index) => (
               <div key={episode.guid || index} className="my-2">
                 <Episode
@@ -81,12 +83,11 @@ export default async function Home() {
                 />
               </div>
             ))}
-            <Link href="/episodes" className="text-primary-main hover:underline no-underline">
-              See more...
-            </Link>
           </div>
           <div id="blogs" className="mt-20 flex flex-col items-center">
-            <h2 className="text-4xl font-bold mb-2 text-center">Blogs</h2>
+            <Link href="/blog" className="hover:text-primary-main transition-colors cursor-pointer group">
+              <h2 className="text-4xl font-bold mb-8 text-center">Blogs →</h2>
+            </Link>
             {blogs.map((blog, index) => (
               <div key={index} className="my-2">
                 <Blog
@@ -100,9 +101,6 @@ export default async function Home() {
                 />
               </div>
             ))}
-            <Link href="/blog" className="text-primary-main hover:underline no-underline">
-              See more...
-            </Link>
           </div>
         </div>
       </div>

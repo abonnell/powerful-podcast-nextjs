@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getPodcastFeed, generateEpisodeSlug } from "@/lib/rss";
 import { notFound } from "next/navigation";
+import sanitizeHtml from "sanitize-html";
 
 export const revalidate = 14400; // Revalidate every 4 hours
 
@@ -15,6 +16,18 @@ export default async function EpisodePage({ params }) {
   if (!episode) {
     notFound();
   }
+
+  // Sanitize HTML description to prevent XSS attacks
+  const sanitizedDescription = sanitizeHtml(episode.htmlDescription, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2']),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      '*': ['class'],
+      'img': ['src', 'alt', 'title', 'width', 'height'],
+      'a': ['href', 'target', 'rel'],
+    },
+    allowedSchemes: ['http', 'https', 'mailto'],
+  });
 
   return (
     <div>
@@ -48,7 +61,7 @@ export default async function EpisodePage({ params }) {
         )}
         <div 
           className="prose dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: episode.htmlDescription }}
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
         />
       </div>
     </div>

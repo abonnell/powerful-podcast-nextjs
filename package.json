@@ -13,6 +13,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "rss-parser": "^3.13.0",
+    "sanitize-html": "^2.17.3",
     "strapi-sdk-js": "^3.0.0"
   },
   "devDependencies": {
