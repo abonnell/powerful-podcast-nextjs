@@ -19,7 +19,9 @@ async function strapiFind(endpoint, options = {}) {
   });
 
   if (!response.ok) {
-    throw new Error(`Strapi API error: ${response.status} ${response.statusText}`);
+    const errorBody = await response.text();
+    console.error('Strapi API error details:', errorBody);
+    throw new Error(`Strapi API error: ${response.status} ${response.statusText} - ${errorBody}`);
   }
 
   return response.json();

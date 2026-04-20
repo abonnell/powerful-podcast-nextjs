@@ -14,58 +14,101 @@ export function generateBlogSlug(title) {
 }
 
 /**
- * Extract preview text from HTML body
- * @param {string} htmlBody - The HTML content
+ * Extract text from TipTap JSON content
+ * @param {object} content - The TipTap JSON content object
+ * @returns {string} Plain text extracted from the content
+ */
+function extractTextFromTipTap(content) {
+  if (!content || !content.content) return '';
+  
+  let text = '';
+  
+  // Recursively extract text from nodes
+  function extractFromNode(node) {
+    if (!node) return '';
+    
+    // If it's a text node, return its text
+    if (node.type === 'text') {
+      return node.text || '';
+    }
+    
+    // Skip headings, images, blockquotes, tables for preview
+    if (['heading', 'image', 'blockquote', 'table', 'horizontalRule'].includes(node.type)) {
+      return '';
+    }
+    
+    // If node has content array, process children
+    if (node.content && Array.isArray(node.content)) {
+      return node.content.map(extractFromNode).join(' ');
+    }
+    
+    return '';
+  }
+  
+  // Extract text from all content nodes
+  text = content.content.map(extractFromNode).join(' ');
+  
+  // Normalize whitespace
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Extract preview text from blog body (supports both HTML and TipTap JSON)
+ * @param {string} body - The blog body content (HTML or TipTap JSON string)
  * @param {number} maxLength - Maximum length of preview text
  * @returns {string} The preview text with ellipsis if truncated
  */
-export function getPreviewText(htmlBody, maxLength = 100) {
-  if (!htmlBody) return '';
+export function getPreviewText(body, maxLength = 100) {
+  if (!body) return '';
   
-  // First, try to extract lead paragraphs (those marked with data-lead="true")
-  const leadMatch = htmlBody.match(/<p[^>]*data-lead="true"[^>]*>(.*?)<\/p>/i);
   let text = '';
   
-  if (leadMatch && leadMatch[1]) {
-    // Use lead paragraph if available
-    text = leadMatch[1];
-  } else {
-    // Otherwise, extract all paragraph content, skipping headings
-    // Remove headings first
-    let content = htmlBody.replace(/<h[1-6][^>]*>.*?<\/h[1-6]>/gi, '');
-    // Remove images
-    content = content.replace(/<img[^>]*>/gi, '');
-    // Remove horizontal rules
-    content = content.replace(/<hr[^>]*>/gi, '');
-    // Remove tables
-    content = content.replace(/<table[^>]*>.*?<\/table>/gi, '');
-    // Remove blockquotes (often just quotes, not main content)
-    content = content.replace(/<blockquote[^>]*>.*?<\/blockquote>/gi, '');
-    // Remove details/accordions
-    content = content.replace(/<details[^>]*>.*?<\/details>/gi, '');
+  // Check if the body is TipTap JSON format
+  try {
+    const parsed = JSON.parse(body);
+    if (parsed.type === 'doc' && parsed.content) {
+      // It's TipTap JSON
+      text = extractTextFromTipTap(parsed);
+    } else {
+      // Not TipTap format, treat as HTML
+      throw new Error('Not TipTap format');
+    }
+  } catch (e) {
+    // It's HTML or plain text, use original logic
+    const leadMatch = body.match(/<p[^>]*data-lead="true"[^>]*>(.*?)<\/p>/i);
     
-    // Extract paragraph text
-    const paragraphs = content.match(/<p[^>]*>(.*?)<\/p>/gi) || [];
+    if (leadMatch && leadMatch[1]) {
+      text = leadMatch[1];
+    } else {
+      // Extract all paragraph content, skipping headings
+      let content = body.replace(/<h[1-6][^>]*>.*?<\/h[1-6]>/gi, '');
+      content = content.replace(/<img[^>]*>/gi, '');
+      content = content.replace(/<hr[^>]*>/gi, '');
+      content = content.replace(/<table[^>]*>.*?<\/table>/gi, '');
+      content = content.replace(/<blockquote[^>]*>.*?<\/blockquote>/gi, '');
+      content = content.replace(/<details[^>]*>.*?<\/details>/gi, '');
+      
+      const paragraphs = content.match(/<p[^>]*>(.*?)<\/p>/gi) || [];
+      
+      text = paragraphs
+        .map(p => p.replace(/<[^>]*>/g, ''))
+        .map(p => p.trim())
+        .filter(p => p.length > 0)
+        .join(' ');
+    }
     
-    // Get text from paragraphs, filtering out empty ones
-    text = paragraphs
-      .map(p => p.replace(/<[^>]*>/g, '')) // Strip HTML tags
-      .map(p => p.trim()) // Trim whitespace
-      .filter(p => p.length > 0) // Filter empty paragraphs
-      .join(' '); // Join with spaces
+    // Strip any remaining HTML tags
+    text = text.replace(/<[^>]*>/g, '');
+    
+    // Decode HTML entities
+    text = text
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
   }
-  
-  // Strip any remaining HTML tags
-  text = text.replace(/<[^>]*>/g, '');
-  
-  // Decode HTML entities
-  text = text
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
   
   // Normalize whitespace
   text = text.replace(/\s+/g, ' ').trim();

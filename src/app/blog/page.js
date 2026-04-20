@@ -15,7 +15,7 @@ export default async function BlogsPage() {
     const response = await strapi.find("blogs?populate=Cover&populate=createdBy");
     const strapiBlogs = response.data || [];
     
-    // Extract unique authors from the blogs
+    // Extract unique authors
     authors = strapi.extractUniqueAuthors(strapiBlogs);
     
     // Transform Strapi blogs to component format
