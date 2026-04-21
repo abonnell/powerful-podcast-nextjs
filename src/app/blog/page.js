@@ -1,44 +1,12 @@
 import { Suspense } from "react";
 import BlogGrid from "@components/BlogGrid/BlogGrid.jsx";
-import LogoImage from "@public/logo.png";
-import strapi from "@/lib/strapi";
-import { generateBlogSlug, getPreviewText } from "@/lib/blog";
+import { getAllBlogs } from "@/lib/data";
 
 export const revalidate = 14400; // Revalidate every 4 hours
 
 export default async function BlogsPage() {
-  let blogs = [];
-  let authors = [];
-  
-  // Fetch blogs from Strapi
-  try {
-    const response = await strapi.find("blogs?populate=Cover&populate=createdBy");
-    const strapiBlogs = response.data || [];
-    
-    // Extract unique authors
-    authors = strapi.extractUniqueAuthors(strapiBlogs);
-    
-    // Transform Strapi blogs to component format
-    blogs = strapiBlogs.map((blog) => {
-      // Use Cover image from Strapi if available, otherwise fallback to static logo
-      let imgSrc = LogoImage;
-      if (blog.Cover?.url) {
-        imgSrc = blog.Cover.url.startsWith('http') ? blog.Cover.url : `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`;
-      }
-      
-      return {
-        img: imgSrc,
-        imgAlt: blog.Title,
-        title: blog.Title,
-        href: `/blog/${generateBlogSlug(blog.Title)}`,
-        previewText: getPreviewText(blog.Body, 100),
-        author: blog.createdBy ? `${blog.createdBy.firstname} ${blog.createdBy.lastname}` : null,
-        createdAt: blog.createdAt,
-      };
-    });
-  } catch (error) {
-    console.error("Error fetching blogs from Strapi:", error);
-  }
+  // Fetch all blogs from centralized data layer
+  const { blogs, authors } = await getAllBlogs();
 
   return (
     <div>

@@ -76,6 +76,10 @@ export async function POST(request) {
     const type = body.type || 'blog';
     
     if (type === 'blog') {
+      // Always revalidate the home page
+      revalidatePath('/');
+      console.log('✓ Revalidated /');
+      
       // Always revalidate the main blog listing page
       revalidatePath('/blog');
       console.log('✓ Revalidated /blog');
@@ -99,7 +103,7 @@ export async function POST(request) {
       
       return NextResponse.json({
         revalidated: true,
-        paths: slug ? ['/blog', `/blog/${slug}`, '/gallery/blogs'] : ['/blog', '/gallery/blogs'],
+        paths: slug ? ['/', '/blog', `/blog/${slug}`, '/gallery/blogs'] : ['/', '/blog', '/gallery/blogs'],
         now: Date.now()
       });
     }

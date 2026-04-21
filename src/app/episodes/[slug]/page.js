@@ -1,17 +1,26 @@
 import Image from "next/image";
-import { getPodcastFeed, generateEpisodeSlug } from "@/lib/rss";
 import { notFound } from "next/navigation";
 import sanitizeHtml from "sanitize-html";
+import { getAllEpisodes, getEpisodeBySlug } from "@/lib/data";
 
 export const revalidate = 14400; // Revalidate every 4 hours
 
+// Generate static params for all episodes at build time
+export async function generateStaticParams() {
+  const { episodes } = await getAllEpisodes();
+  
+  return episodes.map((episode) => {
+    // Extract slug from href (e.g., "/episodes/my-slug" -> "my-slug")
+    const slug = episode.href.split('/').pop();
+    return { slug };
+  });
+}
+
 export default async function EpisodePage({ params }) {
   const { slug } = await params;
-  const { episodes } = await getPodcastFeed();
   
-  const episode = episodes.find(
-    (ep) => generateEpisodeSlug(ep.title, ep.episodeNumber) === slug
-  );
+  // Fetch the specific episode using centralized data layer
+  const episode = await getEpisodeBySlug(slug);
   
   if (!episode) {
     notFound();
