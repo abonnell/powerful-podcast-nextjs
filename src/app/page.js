@@ -2,58 +2,14 @@ import Image from "next/image";
 import BannerDark from "@public/banner_dark.png";
 import Episode from "@components/Episode/Episode.jsx";
 import Blog from "@components/Blog/Blog.jsx";
-import LogoImage from "@public/logo.png";
 import Link from "next/link";
-import strapi from "@/lib/strapi";
-import { getPodcastFeed, generateEpisodeSlug } from "@/lib/rss";
-import { generateBlogSlug, getPreviewText } from "@/lib/blog";
+import { getHomePageData } from "@/lib/data";
 
 export const revalidate = 14400; // Revalidate every 4 hours
 
 export default async function Home() {
-  // Fetch episodes from RSS feed
-  const { episodes: allEpisodes = [] } = await getPodcastFeed();
-  
-  // Get the 3 most recent episodes
-  const recentEpisodes = allEpisodes
-    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
-    .slice(0, 3)
-    .map(episode => ({
-      ...episode,
-      href: `/episodes/${generateEpisodeSlug(episode.title, episode.episodeNumber)}`
-    }));
-
-  let blogs = [];
-  
-  // Fetch blogs from Strapi
-  try {
-    const response = await strapi.find("blogs?populate=Cover&populate=createdBy");
-    const strapiBlogs = response.data || [];
-    
-    // Transform Strapi blogs to component format
-    blogs = strapiBlogs
-      .map((blog) => {
-        // Use Cover image from Strapi if available, otherwise fallback to logo.png
-        let imgSrc = LogoImage;
-        if (blog.Cover?.url) {
-          imgSrc = blog.Cover.url.startsWith('http') ? blog.Cover.url : `${process.env.STRAPI_BASE_PATH}${blog.Cover.url}`;
-        }
-        
-        return {
-          img: imgSrc,
-          imgAlt: blog.Title,
-          title: blog.Title,
-          href: `/blog/${generateBlogSlug(blog.Title)}`,
-          previewText: getPreviewText(blog.Body, 100),
-          author: blog.createdBy ? `${blog.createdBy.firstname} ${blog.createdBy.lastname}` : null,
-          createdAt: blog.createdAt,
-        };
-      })
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      .slice(0, 3);
-  } catch (error) {
-    console.error("Error fetching blogs from Strapi:", error);
-  }
+  // Fetch all home page data from centralized data layer
+  const { recentBlogs, recentEpisodes } = await getHomePageData();
 
   return (
     <div>
@@ -88,8 +44,8 @@ export default async function Home() {
             <Link href="/blog" className="hover:text-primary-main transition-colors cursor-pointer group">
               <h2 className="text-4xl font-bold mb-8 text-center">Blogs →</h2>
             </Link>
-            {blogs.map((blog, index) => (
-              <div key={index} className="my-2">
+            {recentBlogs.map((blog, index) => (
+              <div key={blog.id || index} className="my-2">
                 <Blog
                   img={blog.img}
                   imgAlt={blog.imgAlt}

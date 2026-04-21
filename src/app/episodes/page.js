@@ -1,20 +1,12 @@
 import { Suspense } from "react";
 import EpisodeGrid from "@components/EpisodeGrid/EpisodeGrid.jsx";
-import { getPodcastFeed, generateEpisodeSlug } from "@/lib/rss";
-import LogoImage from "@public/logo.png";
+import { getAllEpisodes } from "@/lib/data";
 
 export const revalidate = 14400; // Revalidate every 4 hours
 
 export default async function EpisodesPage() {
-  const { episodes } = await getPodcastFeed();
-
-  // Pre-generate hrefs on the server side
-  const episodesWithHrefs = episodes.map(episode => ({
-    ...episode,
-    // Use episode-specific image if available, otherwise use static logo
-    image: episode.image || LogoImage,
-    href: `/episodes/${generateEpisodeSlug(episode.title, episode.episodeNumber)}`
-  }));
+  // Fetch all episodes from centralized data layer
+  const { episodes: episodesWithHrefs } = await getAllEpisodes();
 
   return (
     <div>
