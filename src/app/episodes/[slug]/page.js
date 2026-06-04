@@ -30,6 +30,7 @@ export async function generateMetadata({ params }) {
       title: episode.title,
       description,
       images: [{ url: image, width: 400, height: 400 }],
+      type: "article",
       publishedTime,
     },
     twitter: {
