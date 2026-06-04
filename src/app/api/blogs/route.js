@@ -21,7 +21,7 @@ export async function GET() {
         title: blog.Title,
         href: `/blog/${generateBlogSlug(blog.Title)}`,
         previewText: getPreviewText(blog.Body, 100),
-        author: blog.createdBy ? `${blog.createdBy.firstname} ${blog.createdBy.lastname}` : null,
+        author: blog.createdBy ? `${blog.createdBy.firstname}${blog.createdBy.lastname ? " " + blog.createdBy.lastname : ""}` : null,
         createdAt: blog.createdAt,
       };
     });

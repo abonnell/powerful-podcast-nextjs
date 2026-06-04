@@ -42,7 +42,7 @@ export async function getAllBlogs() {
         href: `/blog/${generateBlogSlug(blog.Title)}`,
         previewText: getPreviewText(blog.Body, 100),
         author: blog.createdBy 
-          ? `${blog.createdBy.firstname} ${blog.createdBy.lastname}` 
+          ? `${blog.createdBy.firstname}${blog.createdBy.lastname ? " " + blog.createdBy.lastname : ""}` 
           : null,
         authorId: blog.createdBy?.id,
         createdAt: blog.createdAt,
