@@ -23,6 +23,9 @@ export async function generateMetadata({ params }) {
       title: blog.title,
       description,
       images: [{ url: image, width: 1200, height: 600 }],
+      type: "article",
+      authors: blog.author ? [blog.author] : undefined,
+      publishedTime: blog.publishedAt,
     },
     twitter: {
       card: "summary_large_image",
