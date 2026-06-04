@@ -8,6 +8,7 @@
 
 import strapi from "@/lib/strapi";
 import { getPodcastFeed, generateEpisodeSlug } from "@/lib/rss";
+import { getYoutubeVideos, matchYoutubeToEpisodes } from "@/lib/youtube";
 import { generateBlogSlug, getPreviewText } from "@/lib/blog";
 import LogoImage from "@public/logo.png";
 
@@ -77,17 +78,23 @@ export async function getRecentBlogs(limit = 3) {
 export async function getAllEpisodes() {
   const feedData = await getPodcastFeed();
   const { episodes = [], ...feedMeta } = feedData;
-  
+
+  // Fetch YouTube videos and match them to RSS episodes
+  const [youtubeVideos] = await Promise.all([
+    getYoutubeVideos(),
+  ]);
+  const matchedEpisodes = matchYoutubeToEpisodes(youtubeVideos, episodes);
+
   // Transform episodes to standardized format with hrefs
-  const transformedEpisodes = episodes.map(episode => ({
+  const transformedEpisodes = matchedEpisodes.map(episode => ({
     ...episode,
     image: episode.image || LogoImage,
     href: `/episodes/${generateEpisodeSlug(episode.title, episode.episodeNumber)}`,
   }));
-  
-  return { 
-    episodes: transformedEpisodes, 
-    feedMeta 
+
+  return {
+    episodes: transformedEpisodes,
+    feedMeta,
   };
 }
 

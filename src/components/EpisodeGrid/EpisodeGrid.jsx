@@ -57,7 +57,7 @@ export default function EpisodeGrid({ episodes }) {
       renderItem={(episode) => (
         <Episode
           key={episode.guid}
-          img={episode.image}
+          img={episode.youtubeVideoId ? `https://i.ytimg.com/vi/${episode.youtubeVideoId}/hqdefault.jpg` : episode.image}
           imgAlt={episode.title}
           title={episode.title}
           href={episode.href}

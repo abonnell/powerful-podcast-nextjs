@@ -31,6 +31,12 @@ const nextConfig = {
         hostname: 'cdn.simplecast.com',
         port: '',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        port: '',
+        pathname: '/**'
       }
     ]
   }
