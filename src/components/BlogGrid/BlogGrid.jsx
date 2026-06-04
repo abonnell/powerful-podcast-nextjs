@@ -30,7 +30,9 @@ export default function BlogGrid({ blogs, authors = [] }) {
   // Create filter options from authors list
   const filterOptions = authors.map((author) => {
     const authorName = `${author.firstname} ${author.lastname}`.trim();
-    const authorSlug = `${author.firstname}-${author.lastname}`.toLowerCase();
+    const authorSlug = author.lastname
+      ? `${author.firstname}-${author.lastname}`.toLowerCase()
+      : author.firstname.toLowerCase();
     return {
       value: authorSlug,
       label: authorName,
@@ -47,9 +49,9 @@ export default function BlogGrid({ blogs, authors = [] }) {
       filterOptions={filterOptions}
       defaultFilterBy="all"
       emptyMessage="No blogs found."
-      renderItem={(blog, index) => (
+      renderItem={(blog) => (
         <Blog
-          key={index}
+          key={blog.href}
           img={blog.img}
           imgAlt={blog.imgAlt}
           title={blog.title}
