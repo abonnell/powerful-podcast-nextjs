@@ -1,6 +1,29 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
 
+export const metadata = {
+  title: "powerful. the power metal podcast",
+  openGraph: {
+    title: "powerful. the power metal podcast",
+    url: "https://www.powerful-podcast.com",
+    siteName: "powerful. the power metal podcast",
+    images: [
+      {
+        url: "/logo.png",
+        width: 942,
+        height: 942,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "powerful. the power metal podcast",
+    images: ["/logo.png"],
+  },
+};
+
 const navLinks = [
   {
     key: "Home",

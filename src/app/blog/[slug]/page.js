@@ -4,8 +4,34 @@ import { notFound } from "next/navigation";
 import ShareButton from "@/components/ShareButton/ShareButton.jsx";
 import { renderTipTapContent } from "@/lib/tiptap-renderer";
 import { getAllBlogs, getBlogBySlug } from "@/lib/data";
+import { getPreviewText } from "@/lib/blog";
 
 export const revalidate = 14400; // Revalidate every 4 hours
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const blog = await getBlogBySlug(slug);
+  if (!blog) return {};
+
+  const description = getPreviewText(blog.rawBody, 200);
+  const image = typeof blog.img === "string" ? blog.img : "/logo.png";
+
+  return {
+    title: `${blog.title} | powerful. the power metal podcast`,
+    description,
+    openGraph: {
+      title: blog.title,
+      description,
+      images: [{ url: image, width: 1200, height: 600 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description,
+      images: [image],
+    },
+  };
+}
 
 // Generate static params for all blog posts at build time
 export async function generateStaticParams() {
