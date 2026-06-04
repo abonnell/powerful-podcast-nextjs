@@ -5,6 +5,38 @@ import { getAllEpisodes, getEpisodeBySlug } from "@/lib/data";
 
 export const revalidate = 14400; // Revalidate every 4 hours
 
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const episode = await getEpisodeBySlug(slug);
+  if (!episode) return {};
+
+  const description = episode.htmlDescription
+    ? episode.htmlDescription
+        .replace(/<[^>]*>/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .substring(0, 200) + "..."
+    : "";
+
+  const image = typeof episode.image === "string" ? episode.image : "/logo.png";
+
+  return {
+    title: `${episode.title} | powerful. the power metal podcast`,
+    description,
+    openGraph: {
+      title: episode.title,
+      description,
+      images: [{ url: image, width: 400, height: 400 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: episode.title,
+      description,
+      images: [image],
+    },
+  };
+}
+
 // Generate static params for all episodes at build time
 export async function generateStaticParams() {
   const { episodes } = await getAllEpisodes();
