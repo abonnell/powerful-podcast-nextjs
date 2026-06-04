@@ -29,7 +29,7 @@ export default async function Home() {
             {recentEpisodes.map((episode, index) => (
               <div key={episode.guid || index} className="my-2">
                 <Episode
-                  img={episode.image}
+                  img={episode.youtubeVideoId ? `https://i.ytimg.com/vi/${episode.youtubeVideoId}/hqdefault.jpg` : episode.image}
                   imgAlt={episode.title}
                   title={episode.title}
                   href={episode.href}
