@@ -10,18 +10,21 @@ export async function generateMetadata({ params }) {
   const episode = await getEpisodeBySlug(slug);
   if (!episode) return {};
 
-  const description = episode.htmlDescription
+  const previewText = episode.htmlDescription
     ? episode.htmlDescription
         .replace(/<[^>]*>/g, "")
         .replace(/\s+/g, " ")
         .trim()
         .substring(0, 200) + "..."
     : "";
-
   const image = typeof episode.image === "string" ? episode.image : "/logo.png";
   const publishedTime = episode.pubDate
     ? new Date(episode.pubDate).toISOString()
     : undefined;
+  const dateStr = episode.pubDate
+    ? new Date(episode.pubDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : "";
+  const description = dateStr ? `${dateStr}\n\n${previewText}` : previewText;
 
   return {
     title: `${episode.title} | powerful. the power metal podcast`,

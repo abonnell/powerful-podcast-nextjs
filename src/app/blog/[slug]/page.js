@@ -13,11 +13,16 @@ export async function generateMetadata({ params }) {
   const blog = await getBlogBySlug(slug);
   if (!blog) return {};
 
-  const description = getPreviewText(blog.rawBody, 200);
+  const previewText = getPreviewText(blog.rawBody, 200);
   const image = typeof blog.img === "string" ? blog.img : "/logo.png";
   const publishedTime = blog.publishedAt
     ? new Date(blog.publishedAt).toISOString()
     : undefined;
+  const dateStr = blog.publishedAt
+    ? new Date(blog.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : "";
+  const byline = blog.author ? `By ${blog.author} | ${dateStr}` : dateStr;
+  const description = byline ? `${byline}\n\n${previewText}` : previewText;
 
   return {
     title: `${blog.title} | powerful. the power metal podcast`,
