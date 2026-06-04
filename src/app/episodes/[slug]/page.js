@@ -19,6 +19,9 @@ export async function generateMetadata({ params }) {
     : "";
 
   const image = typeof episode.image === "string" ? episode.image : "/logo.png";
+  const publishedTime = episode.pubDate
+    ? new Date(episode.pubDate).toISOString()
+    : undefined;
 
   return {
     title: `${episode.title} | powerful. the power metal podcast`,
@@ -27,7 +30,7 @@ export async function generateMetadata({ params }) {
       title: episode.title,
       description,
       images: [{ url: image, width: 400, height: 400 }],
-      publishedTime: episode.pubDate,
+      publishedTime,
     },
     twitter: {
       card: "summary_large_image",

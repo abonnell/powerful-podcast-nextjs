@@ -15,6 +15,9 @@ export async function generateMetadata({ params }) {
 
   const description = getPreviewText(blog.rawBody, 200);
   const image = typeof blog.img === "string" ? blog.img : "/logo.png";
+  const publishedTime = blog.publishedAt
+    ? new Date(blog.publishedAt).toISOString()
+    : undefined;
 
   return {
     title: `${blog.title} | powerful. the power metal podcast`,
@@ -25,7 +28,7 @@ export async function generateMetadata({ params }) {
       images: [{ url: image, width: 1200, height: 600 }],
       type: "article",
       authors: blog.author ? [blog.author] : undefined,
-      publishedTime: blog.publishedAt,
+      publishedTime,
     },
     twitter: {
       card: "summary_large_image",
